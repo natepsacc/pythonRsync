@@ -23,5 +23,5 @@ def moveFiles(intake_dir, output_dir):
                 print(f"Copied {src_file_path} to {dst_file_path}")
 
 intakePath = 'intakeTestDir'
-outputPath = '/webapps/onlineimages/onlineimages/templates/'
+outputPath = '/'
 moveFiles(intakePath, outputPath)
