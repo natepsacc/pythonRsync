@@ -6,13 +6,14 @@ remoteIP = ""
 remotePort = "2222"
 remoteUser = "nathan."
 remotePass = ""
-remoteDir = '"\"\"D:\HOME\Photos - ONLINE SALES\template-upload\"\""'
+remoteDir = "/D/template-upload/"
 localDir = "intake/"
 
-
 def scp():
-    print(os.popen('sshpass -p ' + remotePass + 'scp -P' +remotePort + " " + remoteUser + "@" + remoteIP + ":" + remoteDir + " " + localDir).read())
+    command = "sshpass -p '{}' sftp -oPort={} {}@{} <<< $'get {} {}'".format(remotePass, remotePort, remoteUser, remoteIP, remoteDir, localDir)
 
+    # Executing the command
+    print(os.popen(command).read())
 def ensure_dir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -32,7 +33,7 @@ def moveFiles(intake_dir, output_dir):
                 shutil.copy2(src_file_path, dst_file_path)
                 print(f"Copied {src_file_path} to {dst_file_path}")
 
-intakePath = 'intake'
+intakePath = 'intakeTestDir'
 outputPath = '/'
 scp()
 moveFiles(intakePath, outputPath)
