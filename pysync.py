@@ -1,19 +1,38 @@
 import os
 import shutil
 import filecmp
+import paramiko
 
-remoteIP = ""
-remotePort = "2222"
-remoteUser = "nathan."
-remotePass = ""
-remoteDir = "/D/template-upload/"
-localDir = "intake/"
+
 
 def scp():
-    command = "sshpass -p '{}' sftp -oPort={} {}@{} <<< $'get {} {}'".format(remotePass, remotePort, remoteUser, remoteIP, remoteDir, localDir)
-
+    try:
+        # Connect to the server
+        client.connect(remoteIP, port=remotePort, username=remoteUser, password=remotePass)
+        
+        # Create an SFTP session over the existing connection
+        sftp = client.open_sftp()
+        
+        # List files in the remote directory
+        files = sftp.listdir(remoteDir)
+        
+        # Download each file in the remote directory
+        for file in files:
+            remoteFilePath = remoteDir + file
+            localFilePath = localDir + file
+            
+            # Adjust the path if necessary, based on how the server exposes the file system
+            sftp.get(remoteFilePath, localFilePath)
+            print(f"Downloaded {file}")
+        
+        # Close the SFTP session and SSH connection
+        sftp.close()
+        client.close()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        client.close()
     # Executing the command
-    print(os.popen(command).read())
 def ensure_dir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -35,5 +54,4 @@ def moveFiles(intake_dir, output_dir):
 
 intakePath = 'intakeTestDir'
 outputPath = '/'
-scp()
 moveFiles(intakePath, outputPath)
