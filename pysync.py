@@ -3,19 +3,18 @@ import shutil
 import filecmp
 
 remoteIP = "0"
-remotePort = "2222"
+remotePort = "222"
 remoteUser = "nathan."
 remotePass = ""
-remoteDir = "/D/template-upload/"
+remoteDir = "HO-upload/"
 localDir = "intake/"
-
-def scp():
-    command = f"echo 'get {remoteDir}* {localDir}' | sshpass -p '{remotePass}' sftp -oPort={remotePort} {remoteUser}@{remoteIP}"
+outputDir = ''
 
 
-
-    # Executing the command
+def sftp():
+    command = f"echo 'get -R {remoteDir}* {localDir}' | sshpass -p '{remotePass}' sftp -oPort={remotePort} {remoteUser}@{remoteIP}"
     print(os.popen(command).read())
+
 def ensure_dir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -33,8 +32,6 @@ def moveFiles(intake_dir, output_dir):
             
             if not os.path.exists(dst_file_path) or not filecmp.cmp(src_file_path, dst_file_path, shallow=False):
                 shutil.copy2(src_file_path, dst_file_path)
-                print(f"Copied {src_file_path} to {dst_file_path}")
 
-intakePath = 'intakeTestDir'
-outputPath = '/'
-moveFiles(intakePath, outputPath)
+sftp()
+moveFiles(localDir, outputDir)
