@@ -2,6 +2,16 @@ import os
 import shutil
 import filecmp
 
+remoteIP = ""
+remotePort = "2222"
+remoteUser = "nathan."
+remotePass = ""
+remoteDir = '"\"\"D:\HOME\Photos - ONLINE SALES\template-upload\"\""'
+localDir = "intake/"
+
+
+def scp():
+    print(os.popen('sshpass -p ' + remotePass + 'scp -P' +remotePort + " " + remoteUser + "@" + remoteIP + ":" + remoteDir + " " + localDir).read())
 
 def ensure_dir(directory):
     if not os.path.exists(directory):
@@ -22,6 +32,7 @@ def moveFiles(intake_dir, output_dir):
                 shutil.copy2(src_file_path, dst_file_path)
                 print(f"Copied {src_file_path} to {dst_file_path}")
 
-intakePath = 'intakeTestDir'
+intakePath = 'intake'
 outputPath = '/'
+scp()
 moveFiles(intakePath, outputPath)
